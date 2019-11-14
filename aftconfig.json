@@ -1,0 +1,7 @@
+{
+    "testloglevel": "info",
+    "test_platform": "windows_10_chrome",
+    "session_provider": "BrowserStackSession",
+    "browserstack_user": null,
+    "browserstack_accesskey": null
+}
