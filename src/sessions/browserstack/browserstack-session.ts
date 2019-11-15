@@ -1,9 +1,9 @@
 import * as selenium from "selenium-webdriver";
 import { ISession, SessionOptions, TestPlatform, UiConfig, FacetLocator, IFacet, IFacetProvider } from "aft-ui";
 import { IDisposable, TestLog, TestLogOptions } from "aft-core";
-import { BrowserStackConfig } from "../configuration/browserstack-config";
 import { FacetLocatorConverter } from "../../helpers/facet-locator-converter";
 import '../../containers/selenium-facet-provider';
+import { BrowserStackConfig } from "./configuration/browserstack-config";
 
 export class BrowserStackSession implements ISession, IDisposable {
     driver: selenium.WebDriver;

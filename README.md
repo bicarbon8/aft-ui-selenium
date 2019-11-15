@@ -22,13 +22,13 @@ export class HerokuLoginPage extends Page {
         return this.getWidget(HerokuContentWidget);
     }
     private messages(): Promise<HerokuMessagesWidget> {
-        let wo: WidgetOptions = new WidgetOptions(this.container);
+        let wo: WidgetOptions = new WidgetOptions(this.session);
         wo.maxWaitMs = 20000;
         return this.getWidget(HerokuMessagesWidget, wo);
     }
 
     async navigateTo(): Promise<void> {
-        await this.container.goTo('https://the-internet.herokuapp.com/login');
+        await this.session.goTo('https://the-internet.herokuapp.com/login');
         return this.waitUntilDoneLoading();
     }
     async isDoneLoading(): Promise<boolean> {

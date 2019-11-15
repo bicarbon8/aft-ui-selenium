@@ -6,8 +6,8 @@ export class BrowserStackSessionGenerator implements ISessionGenerator {
     provides: string = BrowserStackSession.name;
     
     async generate(options: SessionOptions): Promise<ISession> {
-        let container: BrowserStackSession = new BrowserStackSession();
-        await container.initialise(options);
-        return container;
+        let session: BrowserStackSession = new BrowserStackSession();
+        await session.initialise(options);
+        return session;
     }
 }

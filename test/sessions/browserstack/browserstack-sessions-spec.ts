@@ -1,5 +1,5 @@
 import { using, TestLog, TestLogOptions, RandomGenerator } from "aft-core";
-import { BrowserStackSession } from "../../../src/browserstack/sessions/browserstack-session";
+import { BrowserStackSession } from "../../../src/sessions/browserstack/browserstack-session";
 import { SessionOptions, FacetLocator, TestPlatform, IFacet } from "aft-ui";
 import '../../../src/containers/selenium-facet-provider';
 
