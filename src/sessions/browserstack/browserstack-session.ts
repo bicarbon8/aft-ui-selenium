@@ -1,9 +1,9 @@
 import * as selenium from "selenium-webdriver";
-import { ISession, SessionOptions, TestPlatform, UiConfig, FacetLocator, IFacet, IFacetProvider } from "aft-ui";
+import { ISession, SessionOptions, TestPlatform, UiConfig, FacetLocator, IFacet } from "aft-ui";
 import { IDisposable, TestLog, TestLogOptions } from "aft-core";
 import { FacetLocatorConverter } from "../../helpers/facet-locator-converter";
-import '../../containers/selenium-facet-provider';
 import { BrowserStackConfig } from "./configuration/browserstack-config";
+import { SeleniumFacet } from "../../containers/selenium-facet";
 
 export class BrowserStackSession implements ISession, IDisposable {
     driver: selenium.WebDriver;
@@ -89,9 +89,18 @@ export class BrowserStackSession implements ISession, IDisposable {
         try {
             let loc: selenium.By = FacetLocatorConverter.toSeleniumLocator(locator);
             let elements: selenium.WebElement[] = await this.driver.findElements(loc);
-            return await IFacetProvider.process(...elements);
+            let facets: IFacet[] = [];
+            for (var i=0; i<elements.length; i++) {
+                let el: selenium.WebElement = elements[i];
+                let index: number = i;
+                let f: SeleniumFacet = new SeleniumFacet(async (): Promise<selenium.WebElement> => {
+                    return await this.driver.findElements(loc)[index];
+                });
+                f.cachedRoot = el;
+                facets.push(f);
+            }
+            return facets;
         } catch (e) {
-            this.getLogger().warn(e.toString());
             return Promise.reject(e);
         }
     }

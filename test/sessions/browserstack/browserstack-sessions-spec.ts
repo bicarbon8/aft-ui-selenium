@@ -1,7 +1,6 @@
 import { using, TestLog, TestLogOptions, RandomGenerator } from "aft-core";
 import { BrowserStackSession } from "../../../src/sessions/browserstack/browserstack-session";
 import { SessionOptions, FacetLocator, TestPlatform, IFacet } from "aft-ui";
-import '../../../src/containers/selenium-facet-provider';
 
 describe('BrowserStackSession', () => {
     it('will not work properly unless initialise method is called', async () => {

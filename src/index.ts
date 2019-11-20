@@ -1,5 +1,4 @@
 /* containers */
-export * from './containers/selenium-facet-provider';
 export * from './containers/selenium-facet';
 /* sessions-browserstack */
 export * from './sessions/browserstack/browserstack-session';

@@ -1,44 +1,72 @@
-import { IFacet, FacetLocator, IFacetProvider } from "aft-ui";
+import { IFacet, FacetLocator } from "aft-ui";
 import { WebElement, By } from "selenium-webdriver";
-import { Wait } from "aft-core";
+import { Wait, Func } from "aft-core";
 import { FacetLocatorConverter } from "../helpers/facet-locator-converter";
 
 export class SeleniumFacet implements IFacet {
-    root: WebElement;
-    constructor(element: WebElement) {
-        this.root = element;
+    deferredRoot: Func<void, Promise<WebElement>>
+    cachedRoot: WebElement;
+    
+    constructor(deferredRoot: Func<void, Promise<WebElement>>) {
+        this.deferredRoot = deferredRoot;
     }
+    
     async find(locator: FacetLocator, searchDuration?: number): Promise<IFacet[]> {
-        let facets: IFacet[] = [];
-        let loc: By = FacetLocatorConverter.toSeleniumLocator(locator);
-        if (!searchDuration) {
-            searchDuration = 1000;
+        try {
+            let loc: By = FacetLocatorConverter.toSeleniumLocator(locator);
+            let elements: WebElement[] = await this.getRootElement().then((r) => r.findElements(loc));
+            let facets: IFacet[] = [];
+            for (var i=0; i<elements.length; i++) {
+                let el: WebElement = elements[i];
+                let index: number = i;
+                let f: SeleniumFacet = new SeleniumFacet(async (): Promise<WebElement> => {
+                    return await this.getRootElement().then((r) => r.findElements(loc)[index]);
+                });
+                f.cachedRoot = el;
+                facets.push(f);
+            }
+            return facets;
+        } catch (e) {
+            return Promise.reject(e);
         }
-        // get all elements matching locator under this root and return as IFacet[]
-        await Wait.forCondition(async (): Promise<boolean> => {
-            let elements: WebElement[] = await this.root.findElements(loc);
-            facets = await IFacetProvider.process(...elements);
-            return elements.length > 0 && facets.length == elements.length;
-        }, searchDuration);
-        return facets;
     }
+    
     async enabled(): Promise<boolean> {
-        return await this.root.isEnabled();
+        return await this.getRootElement().then((r) => r.isEnabled());
     }
+
     async displayed(): Promise<boolean> {
-        return await this.root.isDisplayed();
+        return await this.getRootElement().then((r) => r.isDisplayed());
     }
+
     async click(): Promise<void> {
-        await this.root.click();
+        await this.getRootElement().then((r) => r.click());
     }
+
     async text(input?: string): Promise<string> {
         if (input) {
-            this.root.sendKeys(input);
-            return this.root.getAttribute('value');
+            this.getRootElement().then((r) => r.sendKeys(input));
+            return this.getRootElement().then((r) => r.getAttribute('value'));
         }
-        return await this.root.getText();
+        return await this.getRootElement().then((r) => r.getText());
     }
+
     async attribute(key: string): Promise<string> {
-        return await this.root.getAttribute(key);
+        return await this.getRootElement().then((r) => r.getAttribute(key));
+    }
+
+    private async getRootElement(): Promise<WebElement> {
+        if (!this.cachedRoot) {
+            this.cachedRoot = await Promise.resolve(this.deferredRoot());
+        } else {
+            try {
+                // ensure cachedRoot is not stale
+                await this.cachedRoot.isDisplayed();
+            } catch (e) {
+                this.cachedRoot = null;
+                return await this.getRootElement();
+            }
+        }
+        return this.cachedRoot;
     }
 }
