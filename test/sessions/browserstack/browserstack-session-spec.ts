@@ -114,6 +114,7 @@ describe('BrowserStackSession', () => {
             platform.osVersion = '10';
             let opts: SessionOptions = new SessionOptions();
             opts.platform = platform;
+            opts.logger = new TestLog(new TestLogOptions('can create a session in BrowserStack'));
 
             await session.initialise(opts);
 

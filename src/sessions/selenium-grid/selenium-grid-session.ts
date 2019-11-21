@@ -45,7 +45,7 @@ export class SeleniumGridSession extends AbstractGridSession {
     }
 
     async dispose(e?: Error) {
-        super.dispose(e);
+        await super.dispose(e);
         if (this.getLogger() && this.getLogger().name == SeleniumGridSession.name) {
             this.getLogger().dispose(e);
         }

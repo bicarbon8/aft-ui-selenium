@@ -68,7 +68,7 @@ export class BrowserStackSession extends AbstractGridSession {
     }
 
     async dispose(e?: Error) {
-        super.dispose(e);
+        await super.dispose(e);
         if (this.getLogger() && this.getLogger().name == BrowserStackSession.name) {
             this.getLogger().dispose(e);
         }

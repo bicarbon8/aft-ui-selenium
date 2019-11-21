@@ -113,6 +113,7 @@ describe('SauceLabsSession', () => {
             platform.osVersion = '10';
             let opts: SessionOptions = new SessionOptions();
             opts.platform = platform;
+            opts.logger = new TestLog(new TestLogOptions('can create a session in Sauce Labs'));
 
             await session.initialise(opts);
 
