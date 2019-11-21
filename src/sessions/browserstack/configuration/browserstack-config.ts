@@ -5,6 +5,7 @@ export module BrowserStackConfig {
     export const ACCESSKEY_KEY = 'browserstack_accesskey';
     export const USE_VPN_KEY = 'browserstack_use_vpn';
     export const HUB_URL_KEY = 'browserstack_url';
+    export const LOCAL_ID_KEY = 'browserstack_local_id';
 
     export async function user(user?: string): Promise<string> {
         if (user) {
@@ -35,36 +36,13 @@ export module BrowserStackConfig {
         if (url) {
             TestConfig.setGlobalValue(HUB_URL_KEY, url);
         }
-        return await TestConfig.getValueOrDefault(HUB_URL_KEY, 'http://hub-cloud.browserstack.com/wd/hub/');
+        return await TestConfig.getValueOrDefault(HUB_URL_KEY, 'https://hub-cloud.browserstack.com/wd/hub/');
     }
 
-    export async function buildName(): Promise<string> {
-        let job: string = await BuildInfo.name();
-        if (job) {
-            job = formatString(job);
-            let build: string = await BuildInfo.name();
-            build = formatString(build);
-            return `${job}_${build}`;
-        } else {
-            let username: string = formatString(await MachineInfo.user());
-            let machine: string = formatString(await MachineInfo.name());
-            let d = new Date();
-            let month: number = d.getUTCMonth() + 1;
-            let monthStr: string = month.toString();
-            if (month < 10) {
-                monthStr = '0' + month;
-            }
-            let day: number = d.getUTCDate();
-            let dayStr: string = day.toString();
-            if (day < 10) {
-                dayStr = '0' + day;
-            }
-            let now: string = formatString(`${d.getUTCFullYear()}${monthStr}${dayStr}`);
-            return `${username}_${machine}_${now}`;
+    export async function localIdentifier(id?: string): Promise<string> {
+        if (id) {
+            TestConfig.setGlobalValue(LOCAL_ID_KEY, id);
         }
-    }
-
-    function formatString(input: string): string {
-        return input.replace(/[\()\;\\\/\|\<\>""'*&^%$#@!,.\-\+_=\?]/gi, '');
+        return await TestConfig.getValueOrDefault(LOCAL_ID_KEY);
     }
 }
