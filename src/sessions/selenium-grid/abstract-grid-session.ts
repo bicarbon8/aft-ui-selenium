@@ -1,6 +1,6 @@
 import * as selenium from "selenium-webdriver";
 import { ISession, SessionOptions, FacetLocator, IFacet } from "aft-ui";
-import { TestLog } from "aft-core";
+import { TestLog, Func } from "aft-core";
 import { FacetLocatorConverter } from "../../helpers/facet-locator-converter";
 import { SeleniumFacet } from "../../containers/selenium-facet";
 import { SeleniumGridConfig } from "./configuration/selenium-grid-config";
@@ -52,13 +52,14 @@ export abstract class AbstractGridSession implements ISession {
             let elements: selenium.WebElement[] = await this.driver.findElements(loc);
             let facets: IFacet[] = [];
             for (var i=0; i<elements.length; i++) {
-                let el: selenium.WebElement = elements[i];
                 let index: number = i;
-                let f: SeleniumFacet = new SeleniumFacet(async (): Promise<selenium.WebElement> => {
-                    return await this.driver.findElements(loc)[index];
-                });
-                f.cachedRoot = el;
-                facets.push(f);
+                let deferred: Func<void, Promise<selenium.WebElement>> = async () => {
+                    let elements: selenium.WebElement[] = await this.driver.findElements(loc);
+                    return elements[index];
+                };
+                let facet: SeleniumFacet = new SeleniumFacet(deferred);
+                facet.cachedRoot = await Promise.resolve(deferred());
+                facets.push(facet);
             }
             return facets;
         } catch (e) {

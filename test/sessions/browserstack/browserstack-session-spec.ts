@@ -1,3 +1,4 @@
+import * as selenium from 'selenium-webdriver';
 import { using, TestLog, TestLogOptions, RandomGenerator } from "aft-core";
 import { BrowserStackSession } from "../../../src/sessions/browserstack/browserstack-session";
 import { SessionOptions, FacetLocator, TestPlatform, IFacet } from "aft-ui";
@@ -23,13 +24,15 @@ describe('BrowserStackSession', () => {
     it('will not dispose of logger if it has different name than class', async () => {
         let session: BrowserStackSession = new BrowserStackSession();
         let logger: TestLog = new TestLog(new TestLogOptions(RandomGenerator.getString(50)));
-        let fakeDriver: object = {
-            findElements: function() {},
-            get: function() {},
-            getSession: function() {},
-            close: function() {},
-            quit: function() {}
-        };
+        let fakeSession: selenium.Session = jasmine.createSpyObj('Session', {
+            'getId': RandomGenerator.getGuid()
+        });
+        let fakeDriver: selenium.WebDriver = jasmine.createSpyObj('WebDriver', {
+            'findElements': Promise.resolve(new Array<selenium.WebElement>(0)),
+            'getSession': Promise.resolve(fakeSession),
+            'close': Promise.resolve(),
+            'quit': Promise.resolve()
+        });
         spyOn(logger, 'dispose').and.callThrough();
 
         let options: SessionOptions = new SessionOptions();
@@ -45,13 +48,15 @@ describe('BrowserStackSession', () => {
     it('will dispose of logger if it has same name as class', async () => {
         let session: BrowserStackSession = new BrowserStackSession();
         let logger: TestLog = new TestLog(new TestLogOptions(BrowserStackSession.name));
-        let fakeDriver: object = {
-            findElements: function() {},
-            get: function() {},
-            getSession: function() {},
-            close: function() {},
-            quit: function() {}
-        };
+        let fakeSession: selenium.Session = jasmine.createSpyObj('Session', {
+            'getId': RandomGenerator.getGuid()
+        });
+        let fakeDriver: selenium.WebDriver = jasmine.createSpyObj('WebDriver', {
+            'findElements': Promise.resolve(new Array<selenium.WebElement>(0)),
+            'getSession': Promise.resolve(fakeSession),
+            'close': Promise.resolve(),
+            'quit': Promise.resolve()
+        });
         spyOn(logger, 'dispose').and.callThrough();
 
         let options: SessionOptions = new SessionOptions();
@@ -65,9 +70,15 @@ describe('BrowserStackSession', () => {
     });
 
     it('can generate capabilities from the passed in SessionOptions', async () => {
-        let driver = {
-            getSession: function() {return RandomGenerator.getString(10);}
-        };
+        let fakeSession: selenium.Session = jasmine.createSpyObj('Session', {
+            'getId': RandomGenerator.getGuid()
+        });
+        let fakeDriver: selenium.WebDriver = jasmine.createSpyObj('WebDriver', {
+            'findElements': Promise.resolve(new Array<selenium.WebElement>(0)),
+            'getSession': Promise.resolve(fakeSession),
+            'close': Promise.resolve(),
+            'quit': Promise.resolve()
+        });
         let session: BrowserStackSession = new BrowserStackSession();
         let options: SessionOptions = new SessionOptions();
         let platform: TestPlatform = new TestPlatform();
@@ -80,7 +91,7 @@ describe('BrowserStackSession', () => {
         options.resolution = RandomGenerator.getString(4, false, true) + 'x' + RandomGenerator.getString(4, false, true);
         options.useVpn = true;
         options.logger = new TestLog(new TestLogOptions('can generate capabilities from the passed in SessionOptions'));
-        options.driver = driver;
+        options.driver = fakeDriver;
 
         await session.initialise(options);
         let capabilities: Capabilities = await session.getCapabilities(options);

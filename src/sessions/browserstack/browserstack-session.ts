@@ -19,13 +19,13 @@ export class BrowserStackSession extends AbstractGridSession {
         
         if (options.driver) {
             this.driver = options.driver as selenium.WebDriver;
-            this.getLogger().trace("using passed in Driver session of: " + await this.driver.getSession());
+            this.getLogger().trace("using passed in Driver session of: " + await this.driver.getSession().then((s) => s.getId()));
         } else {
             let hubUrl: string = await BrowserStackConfig.hubUrl();
             let capabilities: selenium.Capabilities = await this.getCapabilities(options);
             this.getLogger().trace("creating new BrowserStack session...");
             await this.createDriver(hubUrl, capabilities);
-            this.getLogger().trace("new BrowserStack session created successfully: " + await this.driver.getSession());
+            this.getLogger().trace("new BrowserStack session created successfully: " + await this.driver.getSession().then((s) => s.getId()));
         }
     }
 

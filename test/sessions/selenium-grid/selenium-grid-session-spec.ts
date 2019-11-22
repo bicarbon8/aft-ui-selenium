@@ -1,8 +1,7 @@
 import { using, TestLog, TestLogOptions, RandomGenerator } from "aft-core";
 import { SessionOptions, FacetLocator, TestPlatform, IFacet } from "aft-ui";
 import { SeleniumGridSession } from "../../../src/sessions/selenium-grid/selenium-grid-session";
-import { Capabilities } from "selenium-webdriver";
-import { BuildName } from "../../../src/helpers/build-name";
+import * as selenium from "selenium-webdriver";
 
 describe('SeleniumGridSession', () => {
     it('will not work properly unless initialise method is called', async () => {
@@ -22,13 +21,15 @@ describe('SeleniumGridSession', () => {
     it('will not dispose of logger if it has different name than class', async () => {
         let session: SeleniumGridSession = new SeleniumGridSession();
         let logger: TestLog = new TestLog(new TestLogOptions(RandomGenerator.getString(50)));
-        let fakeDriver: object = {
-            findElements: function() {},
-            get: function() {},
-            getSession: function() {},
-            close: function() {},
-            quit: function() {}
-        };
+        let fakeSession: selenium.Session = jasmine.createSpyObj('Session', {
+            'getId': RandomGenerator.getGuid()
+        });
+        let fakeDriver: selenium.WebDriver = jasmine.createSpyObj('WebDriver', {
+            'findElements': Promise.resolve(new Array<selenium.WebElement>(0)),
+            'getSession': Promise.resolve(fakeSession),
+            'close': Promise.resolve(),
+            'quit': Promise.resolve()
+        });
         spyOn(logger, 'dispose').and.callThrough();
 
         let options: SessionOptions = new SessionOptions();
@@ -44,13 +45,15 @@ describe('SeleniumGridSession', () => {
     it('will dispose of logger if it has same name as class', async () => {
         let session: SeleniumGridSession = new SeleniumGridSession();
         let logger: TestLog = new TestLog(new TestLogOptions(SeleniumGridSession.name));
-        let fakeDriver: object = {
-            findElements: function() {},
-            get: function() {},
-            getSession: function() {},
-            close: function() {},
-            quit: function() {}
-        };
+        let fakeSession: selenium.Session = jasmine.createSpyObj('Session', {
+            'getId': RandomGenerator.getGuid()
+        });
+        let fakeDriver: selenium.WebDriver = jasmine.createSpyObj('WebDriver', {
+            'findElements': Promise.resolve(new Array<selenium.WebElement>(0)),
+            'getSession': Promise.resolve(fakeSession),
+            'close': Promise.resolve(),
+            'quit': Promise.resolve()
+        });
         spyOn(logger, 'dispose').and.callThrough();
 
         let options: SessionOptions = new SessionOptions();
@@ -64,9 +67,15 @@ describe('SeleniumGridSession', () => {
     });
 
     it('can generate capabilities from the passed in SessionOptions', async () => {
-        let driver = {
-            getSession: function() {return RandomGenerator.getString(10);}
-        };
+        let fakeSession: selenium.Session = jasmine.createSpyObj('Session', {
+            'getId': RandomGenerator.getGuid()
+        });
+        let fakeDriver: selenium.WebDriver = jasmine.createSpyObj('WebDriver', {
+            'findElements': Promise.resolve(new Array<selenium.WebElement>(0)),
+            'getSession': Promise.resolve(fakeSession),
+            'close': Promise.resolve(),
+            'quit': Promise.resolve()
+        });
         let session: SeleniumGridSession = new SeleniumGridSession();
         let options: SessionOptions = new SessionOptions();
         let platform: TestPlatform = new TestPlatform();
@@ -75,10 +84,10 @@ describe('SeleniumGridSession', () => {
         platform.browser = 'browser-' + RandomGenerator.getString(15);
         platform.browserVersion = 'browserVersion-' + RandomGenerator.getString(2, false, true);
         options.platform = platform;
-        options.driver = driver;
+        options.driver = fakeDriver;
 
         await session.initialise(options);
-        let capabilities: Capabilities = await session.getCapabilities(options);
+        let capabilities: selenium.Capabilities = await session.getCapabilities(options);
 
         expect(capabilities.get('platform')).toEqual(`${platform.os} ${platform.osVersion}`);
         expect(capabilities.get('browserName')).toEqual(`${platform.browser} ${platform.browserVersion}`);
