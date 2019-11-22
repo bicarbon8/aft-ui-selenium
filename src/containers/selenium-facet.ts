@@ -1,7 +1,8 @@
 import { IFacet, FacetLocator } from "aft-ui";
 import { WebElement, By } from "selenium-webdriver";
-import { Func } from "aft-core";
+import { Func, Wait } from "aft-core";
 import { FacetLocatorConverter } from "../helpers/facet-locator-converter";
+import { SeleniumGridConfig } from "../sessions/selenium-grid/configuration/selenium-grid-config";
 
 export class SeleniumFacet implements IFacet {
     deferredRoot: Func<void, Promise<WebElement>>
@@ -16,11 +17,17 @@ export class SeleniumFacet implements IFacet {
             let loc: By = FacetLocatorConverter.toSeleniumLocator(locator);
             let elements: WebElement[] = await this.getRootElement().then((r) => r.findElements(loc));
             let facets: IFacet[] = [];
+            let lookupDuration: number = await SeleniumGridConfig.elementLookupDuration();
             for (var i=0; i<elements.length; i++) {
                 let index: number = i;
                 let deferred: Func<void, Promise<WebElement>> = async () => {
-                    let root: WebElement = await this.getRootElement();
-                    let elements: WebElement[] = await root.findElements(loc);
+                    let root: WebElement;
+                    let elements: WebElement[];
+                    await Wait.forCondition(async () => {
+                        root = await this.getRootElement();
+                        elements = await root.findElements(loc);
+                        return elements.length > index;
+                    }, lookupDuration);
                     return elements[index];
                 };
                 let facet: SeleniumFacet = new SeleniumFacet(deferred);
