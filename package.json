@@ -6,9 +6,8 @@
   "types": "./dist/src/index.d.ts",
   "scripts": {
     "build": "tsc --declaration",
-    "pretest": "tsc",
-    "test": "jasmine JASMINE_CONFIG_PATH=./jasmine.json",
-    "prepare": "tsc --declaration"
+    "pretest": "tsc --declaration",
+    "test": "jasmine JASMINE_CONFIG_PATH=./jasmine.json"
   },
   "repository": {
     "type": "git",
@@ -30,7 +29,7 @@
   },
   "homepage": "https://github.com/bicarbon8/aft-ui-selenium#readme",
   "dependencies": {
-    "aft-ui": "git+https://github.com/bicarbon8/aft-ui.git",
+    "aft-ui": "1.0.0",
     "es6-promise": "4.2.8",
     "selenium-webdriver": "4.0.0-alpha.5"
   },
