@@ -1,6 +1,6 @@
 {
   "name": "aft-ui-selenium",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Automation Framework for Testing (AFT) package supporting Selenium-base UI testing",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/bicarbon8/aft-ui-selenium#readme",
   "dependencies": {
-    "aft-ui": "^2.0.0",
+    "aft-ui": "^2.0.1",
     "es6-promise": "4.2.8",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
