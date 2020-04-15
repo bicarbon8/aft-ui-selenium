@@ -1,6 +1,6 @@
 {
   "name": "aft-ui-selenium",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Automation Framework for Testing (AFT) package supporting Selenium-base UI testing",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -20,7 +20,9 @@
     "integration",
     "functional",
     "ui",
-    "selenium"
+    "selenium",
+    "browserstack",
+    "saucelabs"
   ],
   "author": "Jason Holt Smith <bicarbon8@gmail.com>",
   "license": "MIT",
@@ -29,9 +31,9 @@
   },
   "homepage": "https://github.com/bicarbon8/aft-ui-selenium#readme",
   "dependencies": {
-    "aft-ui": "1.0.0",
+    "aft-ui": "^2.0.0",
     "es6-promise": "4.2.8",
-    "selenium-webdriver": "4.0.0-alpha.5"
+    "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "devDependencies": {
     "@types/jasmine": "3.4.6",
