@@ -1,11 +1,11 @@
-import { BuildInfo, MachineInfo } from "aft-core";
+import { BuildInfoPluginManager, MachineInfo } from "../../../aft-core/src";
 
 export module BuildName {
     export async function get(): Promise<string> {
-        let job: string = await BuildInfo.name();
+        let job: string = await BuildInfoPluginManager.instance().getBuildName();
         if (job) {
             job = formatString(job);
-            let build: string = await BuildInfo.name();
+            let build: string = await BuildInfoPluginManager.instance().getBuildNumber();
             build = formatString(build);
             return `${job}_${build}`;
         } else {

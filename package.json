@@ -1,7 +1,7 @@
 {
   "name": "aft-ui-selenium",
-  "version": "2.0.1",
-  "description": "Automation Framework for Testing (AFT) package supporting Selenium-base UI testing",
+  "version": "3.0.0",
+  "description": "Automated Functional Testing (AFT) package supporting Selenium-based UI testing with support for BrowserStack, Sauce Labs and Local Selenium Grid testing",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "scripts": {
@@ -22,7 +22,8 @@
     "ui",
     "selenium",
     "browserstack",
-    "saucelabs"
+    "saucelabs",
+    "seleniumgrid"
   ],
   "author": "Jason Holt Smith <bicarbon8@gmail.com>",
   "license": "MIT",
