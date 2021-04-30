@@ -1,7 +1,7 @@
-import { Func, ProcessingResult, TestWrapper, TestWrapperOptions, using } from "../../../aft-core/src";
-import { ISession, ISessionOptions, SessionGeneratorPluginManager } from "../../../aft-ui/src";
+import { Func, ProcessingResult, TestWrapper, TestWrapperOptions, using } from "aft-core";
+import { ISession, ISessionOptions, SessionGeneratorPluginManager } from "aft-ui";
 
-export interface BrowserTestWrapperOptions extends TestWrapperOptions, ISessionOptions<any> {
+export interface BrowserTestWrapperOptions extends TestWrapperOptions, ISessionOptions {
     expect: Func<BrowserTestWrapper, any>;
 
     /**
@@ -31,7 +31,7 @@ export class BrowserTestWrapper extends TestWrapper {
     private readonly _options: BrowserTestWrapperOptions;
     private readonly _sessionGenPluginMgr: SessionGeneratorPluginManager;
 
-    private _session: ISession<any, any, any>;
+    private _session: ISession;
 
     constructor(options: BrowserTestWrapperOptions) {
         super(options);
@@ -41,10 +41,10 @@ export class BrowserTestWrapper extends TestWrapper {
 
     /**
      * only valid for use during execution of the {run} function;
-     * this will return an instance of {ISession<any, any, any>}
+     * this will return an instance of {ISession}
      * for use by the executing {expectation}
      */
-    get session(): ISession<any, any, any> {
+    get session(): ISession {
         return this._session;
     }
 

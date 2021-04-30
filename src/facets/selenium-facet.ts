@@ -1,37 +1,45 @@
-import { AbstractFacet, IElementOptions, IFacet, IFacetOptions } from "../../../aft-ui/src";
-import { WebElement, WebDriver, Locator } from "selenium-webdriver";
-import { wait } from "../../../aft-core/src";
+import { Clazz, wait } from "aft-core";
+import { AbstractFacet, IElementOptions, IFacetOptions } from "aft-ui";
+import { Locator, WebElement } from "selenium-webdriver";
+import { SeleniumSession } from "../sessions/selenium-session";
 
-export interface SeleniumFacetOptions extends IFacetOptions<WebDriver, WebElement, Locator> {
-    
+export interface WebElementOptions extends IElementOptions {
+    locator: Locator;
 }
 
-export class SeleniumFacet extends AbstractFacet<WebDriver, WebElement, Locator> {
-    async getElements(options: IElementOptions<Locator>): Promise<WebElement[]> {
+export interface SeleniumFacetOptions extends IFacetOptions {
+    locator?: Locator;
+    session?: SeleniumSession;
+    parent?: SeleniumFacet;
+}
+
+export class SeleniumFacet extends AbstractFacet {
+    readonly locator: Locator;
+    readonly session: SeleniumSession;
+    readonly parent: SeleniumFacet;
+
+    async getElements(options: WebElementOptions): Promise<WebElement[]> {
         let elements: WebElement[]
         await wait.untilTrue(async () => {
-            elements = await this.getRoot().then(async (r) => {
-                return await r.findElements(options.locator);
-            });
+            elements = await this.getRoot().then((r) => r.findElements(options.locator));
             return elements.length > 0;
         }, options.maxWaitMs || 0);
         return elements;
     }
 
-    async getElement(options: IElementOptions<Locator>): Promise<WebElement> {
+    async getElement(options: WebElementOptions): Promise<WebElement> {
         let element: WebElement;
         await wait.untilTrue(async () => {
-            element = await this.getRoot().then(async (r) => {
-                return await r.findElement(options.locator);
-            });
+            element = await this.getRoot()
+                .then(r => r.findElement(options.locator));
             return !!element;
         }, options.maxWaitMs || 0);
         return element;
     }
     
-    async getFacet<T extends IFacet<WebDriver, WebElement, Locator>>(facetType: new (options: IFacetOptions<WebDriver, WebElement, Locator>) => T, options?: IFacetOptions<WebDriver, WebElement, Locator>): Promise<T> {
-        options = options || {} as IFacetOptions<WebDriver, WebElement, Locator>;
-        options.parent = options?.parent || this;
+    async getFacet<T extends AbstractFacet>(facetType: Clazz<T>, options?: IFacetOptions): Promise<T> {
+        options = options || {} as IFacetOptions;
+        options.parent = options?.parent || this as AbstractFacet;
         options.session = options?.session || this.session;
         options.logMgr = options?.logMgr || this.logMgr;
         options.maxWaitMs = options?.maxWaitMs || this.maxWaitMs;
@@ -42,10 +50,9 @@ export class SeleniumFacet extends AbstractFacet<WebDriver, WebElement, Locator>
     async getRoot(): Promise<WebElement>  {
         let el: WebElement;
         await wait.untilTrue(async () => {
-            let parent = this.parent;
-            if (parent) {
-                let els: WebElement[] = await parent.getRoot()
-                    .then((root) => root.findElements(this.locator));
+            if (this.parent) {
+                let els: WebElement[] = await this.parent.getRoot()
+                    .then(r => r.findElements(this.locator));
                 el = els[this.index];
             } else {
                 let els: WebElement[] = await this.session.driver.findElements(this.locator);

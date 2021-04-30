@@ -1,4 +1,4 @@
-import { TestPlatform } from "../../../../aft-ui/src";
+import { TestPlatform } from "aft-ui";
 import { AbstractGridSessionGeneratorPlugin, SeleniumGridSessionPluginOptions } from "../selenium-grid/abstract-grid-session-generator-plugin";
 import { BuildName } from "../../helpers/build-name";
 import { Capabilities } from "selenium-webdriver";

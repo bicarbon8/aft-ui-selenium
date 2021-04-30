@@ -1,5 +1,5 @@
 import { AbstractGridSessionGeneratorPlugin, SeleniumGridSessionPluginOptions } from "./abstract-grid-session-generator-plugin";
-import { TestPlatform } from "../../../../aft-ui/src";
+import { TestPlatform } from "aft-ui";
 import { Capabilities } from "selenium-webdriver";
 import { nameof } from "ts-simple-nameof";
 import { SeleniumSessionOptions } from "../selenium-session";

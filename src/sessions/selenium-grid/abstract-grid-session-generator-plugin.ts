@@ -1,6 +1,6 @@
-import { WebDriver, WebElement, Locator, Builder, Capabilities } from "selenium-webdriver";
+import { WebDriver, Builder, Capabilities } from "selenium-webdriver";
 import { nameof } from "ts-simple-nameof";
-import { AbstractSessionGeneratorPlugin, ISessionGeneratorPluginOptions } from "../../../../aft-ui/src";
+import { AbstractSessionGeneratorPlugin, ISessionGeneratorPluginOptions } from "aft-ui";
 import { SeleniumSession, SeleniumSessionOptions } from "../selenium-session";
 
 export interface SeleniumGridSessionPluginOptions extends ISessionGeneratorPluginOptions {
@@ -8,7 +8,7 @@ export interface SeleniumGridSessionPluginOptions extends ISessionGeneratorPlugi
     capabilities?: {};
 }
 
-export abstract class AbstractGridSessionGeneratorPlugin extends AbstractSessionGeneratorPlugin<WebDriver, WebElement, Locator> {
+export abstract class AbstractGridSessionGeneratorPlugin extends AbstractSessionGeneratorPlugin {
     private _url: string;
     private _caps: Capabilities;
 
@@ -31,7 +31,7 @@ export abstract class AbstractGridSessionGeneratorPlugin extends AbstractSession
         return this._caps;
     }
 
-    async newSession<T extends SeleniumSession>(options?: SeleniumSessionOptions): Promise<T> {
+    async newSession(options?: SeleniumSessionOptions): Promise<SeleniumSession> {
         if (await this.enabled()) {
             if (!options?.driver) {
                 try {
@@ -46,12 +46,12 @@ export abstract class AbstractGridSessionGeneratorPlugin extends AbstractSession
                     return new SeleniumSession({
                         driver: driver,
                         logMgr: options?.logMgr || this.logMgr
-                    }) as T;
+                    });
                 } catch (e) {
                     return Promise.reject(e);
                 }
             }
-            return new SeleniumSession({driver: options.driver, logMgr: options.logMgr || this.logMgr}) as T;
+            return new SeleniumSession({driver: options.driver, logMgr: options.logMgr || this.logMgr});
         }
         return null;
     }

@@ -1,4 +1,4 @@
-import { BuildInfoPluginManager, MachineInfo, MachineInfoData } from "../../../aft-core/src";
+import { BuildInfoPluginManager, MachineInfo, MachineInfoData } from "aft-core";
 
 export module BuildName {
     export async function get(): Promise<string> {

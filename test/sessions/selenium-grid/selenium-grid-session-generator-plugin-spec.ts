@@ -1,5 +1,5 @@
-import { rand } from "../../../../aft-core/src";
-import { TestPlatform } from "../../../../aft-ui/src";
+import { rand } from "aft-core";
+import { TestPlatform } from "aft-ui";
 import { SeleniumGridSessionGeneratorPlugin } from "../../../src/sessions/selenium-grid/selenium-grid-session-generator-plugin";
 import { By, Capabilities } from "selenium-webdriver";
 import { SeleniumFacet } from "../../../src/facets/selenium-facet";

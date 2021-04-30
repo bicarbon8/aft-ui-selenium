@@ -1,5 +1,5 @@
-import { By, WebDriver, WebElement, Session, Locator } from "selenium-webdriver";
-import { LoggingPluginManager, rand } from "../../../aft-core/src";
+import { By, WebDriver, WebElement, Session } from "selenium-webdriver";
+import { LoggingPluginManager, rand } from "aft-core";
 import { SeleniumFacet } from "../../src";
 import { SeleniumSession } from "../../src/sessions/selenium-session";
 

@@ -1,7 +1,7 @@
 import { By, Capabilities } from 'selenium-webdriver';
-import { using, LoggingPluginManager, rand } from "../../../../aft-core/src";
+import { using, LoggingPluginManager, rand } from "aft-core";
 import { BrowserStackSessionGeneratorPlugin, BrowserStackSessionGeneratorPluginOptions } from "../../../src/sessions/browserstack/browserstack-session-generator-plugin";
-import { TestPlatform } from "../../../../aft-ui/src";
+import { TestPlatform } from "aft-ui";
 import { BuildName } from "../../../src/helpers/build-name";
 import { SeleniumFacet, SeleniumSession } from "../../../src";
 

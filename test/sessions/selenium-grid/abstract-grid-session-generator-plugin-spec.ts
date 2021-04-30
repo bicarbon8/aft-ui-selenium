@@ -1,6 +1,6 @@
 import { Capabilities } from "selenium-webdriver";
 import { nameof } from "ts-simple-nameof";
-import { rand } from "../../../../aft-core/src";
+import { rand } from "aft-core";
 import { AbstractGridSessionGeneratorPlugin, SeleniumGridSessionPluginOptions } from "../../../src";
 
 describe('AbstractGridSessionGeneratorPlugin', () => {

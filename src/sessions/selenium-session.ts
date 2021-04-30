@@ -1,21 +1,22 @@
-import { Locator, WebDriver, WebElement } from "selenium-webdriver";
-import { LoggingPluginManager } from "../../../aft-core/src";
-import { IFacet, IFacetOptions, ISession, ISessionOptions } from "../../../aft-ui/src";
+import { WebDriver } from "selenium-webdriver";
+import { Clazz, LoggingPluginManager } from "aft-core";
+import { AbstractFacet, ISession, ISessionOptions } from "aft-ui";
+import { SeleniumFacetOptions } from "../facets/selenium-facet";
 
-export interface SeleniumSessionOptions extends ISessionOptions<WebDriver> {
-
+export interface SeleniumSessionOptions extends ISessionOptions {
+    driver?: WebDriver;
 }
 
-export class SeleniumSession implements ISession<WebDriver, WebElement, Locator> {
+export class SeleniumSession implements ISession {
     readonly driver: WebDriver;
     readonly logMgr: LoggingPluginManager;
     
     constructor(options: SeleniumSessionOptions) {
         this.driver = options.driver;
-        this.logMgr = options.logMgr || new LoggingPluginManager({logName: `SeleniumSession_${this.driver.getSession().then((s) => s.getId())}`});
+        this.logMgr = options.logMgr || new LoggingPluginManager({logName: `SeleniumSession_${this.driver?.getSession().then(s => s.getId())}`});
     }
     
-    async getFacet<T extends IFacet<WebDriver, WebElement, Locator>>(facetType: new (options: IFacetOptions<WebDriver, WebElement, Locator>) => T, options?: IFacetOptions<WebDriver, WebElement, Locator>): Promise<T> {
+    async getFacet<T extends AbstractFacet>(facetType: Clazz<T>, options?: SeleniumFacetOptions): Promise<T> {
         options = options || {};
         options.session = options.session || this;
         options.logMgr = options.logMgr || this.logMgr;
@@ -23,35 +24,38 @@ export class SeleniumSession implements ISession<WebDriver, WebElement, Locator>
         return facet;
     }
 
-    async dispose(error?: Error): Promise<void> {
-        if (error) {
-            this.logMgr.warn(`Error: SeleniumSession - ${error.message}`);
-        }
-        this.logMgr.trace(`shutting down SeleniumSession: ${await this.driver?.getSession().then((s) => s.getId())}`);
-        await this.driver?.quit();
-    }
-
-    async goTo(url: string): Promise<void> {
+    async goTo(url: string): Promise<SeleniumSession> {
         try {
             await this.driver?.get(url);
         } catch (e) {
             return Promise.reject(e);
         }
+        return this;
     }
 
-    async refresh(): Promise<void> {
+    async refresh(): Promise<SeleniumSession> {
         try {
             await this.driver?.navigate().refresh();
         } catch (e) {
             return Promise.reject(e);
         }
+        return this;
     }
 
-    async resize(width: number, height: number): Promise<void> {
+    async resize(width: number, height: number): Promise<SeleniumSession> {
         try {
             await this.driver?.manage().window().setSize(width, height);
         } catch (e) {
             return Promise.reject(e);
         }
+        return this;
+    }
+
+    async dispose(error?: Error): Promise<void> {
+        if (error) {
+            this.logMgr.warn(`Error: SeleniumSession - ${error.message}`);
+        }
+        this.logMgr.trace(`shutting down SeleniumSession: ${await this.driver?.getSession().then(s => s.getId())}`);
+        await this.driver?.quit();
     }
 }

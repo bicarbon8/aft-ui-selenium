@@ -1,4 +1,4 @@
-import { ProcessingResult } from "../../../aft-core/src/helpers/processing-result";
+import { ProcessingResult } from "aft-core";
 import { BrowserTestWrapper, BrowserTestWrapperOptions } from "./browser-test-wrapper";
 
 /**

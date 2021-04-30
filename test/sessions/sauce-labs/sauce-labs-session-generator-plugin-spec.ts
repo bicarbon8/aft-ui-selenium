@@ -1,6 +1,6 @@
 import { By, Capabilities } from 'selenium-webdriver';
-import { using, LoggingPluginManager, rand } from "../../../../aft-core/src";
-import { TestPlatform } from "../../../../aft-ui/src";
+import { using, LoggingPluginManager, rand } from "aft-core";
+import { TestPlatform } from "aft-ui";
 import { BuildName } from "../../../src/helpers/build-name";
 import { SeleniumFacet } from '../../../src/facets/selenium-facet';
 import { SauceLabsSessionGeneratorPlugin, SauceLabsSessionGeneratorPluginOptions } from '../../../src';
