@@ -1,16 +1,17 @@
-import { BuildInfo, MachineInfo } from "aft-core";
+import { BuildInfoPluginManager, MachineInfo, MachineInfoData } from "aft-core";
 
 export module BuildName {
     export async function get(): Promise<string> {
-        let job: string = await BuildInfo.name();
+        let job: string = await BuildInfoPluginManager.instance().getBuildName();
         if (job) {
             job = formatString(job);
-            let build: string = await BuildInfo.name();
+            let build: string = await BuildInfoPluginManager.instance().getBuildNumber();
             build = formatString(build);
             return `${job}_${build}`;
         } else {
-            let username: string = formatString(await MachineInfo.user());
-            let machine: string = formatString(await MachineInfo.name());
+            let mi: MachineInfoData = await MachineInfo.get();
+            let username: string = formatString(mi.user);
+            let machine: string = formatString(mi.name);
             let d = new Date();
             let month: number = d.getUTCMonth() + 1;
             let monthStr: string = month.toString();

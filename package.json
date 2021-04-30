@@ -1,13 +1,15 @@
 {
   "name": "aft-ui-selenium",
-  "version": "2.0.1",
-  "description": "Automation Framework for Testing (AFT) package supporting Selenium-base UI testing",
+  "version": "4.0.0",
+  "description": "Automated Functional Testing (AFT) package supporting Selenium-based UI testing with support for BrowserStack, Sauce Labs and Local Selenium Grid testing",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "scripts": {
-    "build": "tsc --declaration",
-    "pretest": "tsc --declaration",
-    "test": "jasmine JASMINE_CONFIG_PATH=./jasmine.json"
+    "clean": "rimraf ./dist",
+    "build": "npm run clean && tsc --declaration",
+    "pretest": "npm run build",
+    "test": "./node_modules/.bin/jasmine JASMINE_CONFIG_PATH=./jasmine.json",
+    "coverage": "nyc npm run test"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,8 @@
     "ui",
     "selenium",
     "browserstack",
-    "saucelabs"
+    "saucelabs",
+    "seleniumgrid"
   ],
   "author": "Jason Holt Smith <bicarbon8@gmail.com>",
   "license": "MIT",
@@ -31,15 +34,17 @@
   },
   "homepage": "https://github.com/bicarbon8/aft-ui-selenium#readme",
   "dependencies": {
-    "aft-ui": "^2.0.1",
+    "aft-ui": "^4.0.0",
     "es6-promise": "4.2.8",
-    "selenium-webdriver": "^4.0.0-alpha.7"
+    "selenium-webdriver": "^4.0.0-beta.3"
   },
   "devDependencies": {
     "@types/jasmine": "3.4.6",
     "@types/node": "12.12.7",
     "@types/selenium-webdriver": "4.0.5",
     "jasmine": "3.5.0",
+    "nyc": "^15.1.0",
+    "rimraf": "^3.0.2",
     "typescript": "3.7.2"
   }
 }
